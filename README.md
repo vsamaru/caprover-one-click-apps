@@ -8,3 +8,4 @@ Just add `https://caprover-oneclickapps.skayo.dev` to your 3rd party repositorie
 Some of the apps in my collection are improved or modified versions from the original repo.  
 You can identify my personal apps with the `(Skayo)` suffix.  
 Maybe I will propose some of my changes to the original one-click-app repo, but it's not my priority.
+
