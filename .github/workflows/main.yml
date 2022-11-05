@@ -2,10 +2,8 @@ name: Validate, Build & Deploy
 on:
     push:
         branches:
-            - main
-    pull_request:
-        branches:
-            - main
+            - master
+    
 
 jobs:
     validate-build-deploy:
