@@ -1,0 +1,15 @@
+{
+	"name": "@skayo/caprover-one-click-apps",
+	"version": "1.0.0",
+	"description": "My Personal One-Click-App Repository for CapRover",
+	"scripts": {
+		"build": "rimraf ./dist && node ./scripts/build-one-click-apps.js && node ./scripts/build-one-click-apps-from-v4.js",
+		"validate": "node ./scripts/validate-apps.js"
+	},
+
+	"devDependencies": {
+		"fs-extra": "^10.0.0",
+		"rimraf": "^3.0.2",
+		"yaml": "^1.10.2"
+	}
+}

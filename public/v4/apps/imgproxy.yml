@@ -1,0 +1,81 @@
+# Use schema version 4
+captainVersion: 4
+
+
+# One-click-app options
+caproverOneClickApp:
+
+    # App name
+    displayName: imgproxy (Skayo)
+
+    # Description displayed on the app list
+    description: |-
+        Fast and secure standalone server for resizing and converting remote images
+
+    # Define instructions
+    instructions:
+
+        # Displayed one the app config page, where you enter all variable values
+        start: |-
+            ![imgproxy logo](https://github.com/imgproxy/imgproxy/blob/master/docs/assets/favicon-128.png?raw=true)
+            
+            🌐 [Website](https://imgproxy.net/)
+            📖 [Documentation](https://docs.imgproxy.net/)
+            📁 [GitHub](https://github.com/imgproxy/imgproxy)
+            🐳 [DockerHub](https://hub.docker.com/r/darthsim/imgproxy/)
+            👛 [Go Pro](https://imgproxy.net/#pro)
+
+            imgproxy is a fast and secure standalone server for resizing and converting remote images.
+            The main principles of imgproxy are simplicity, speed, and security.
+
+            imgproxy can be used to provide a fast and secure way to replace all the image resizing code of your web application (like calling ImageMagick or GraphicsMagick, or using libraries),
+            while also being able to resize everything on the fly, fast and easy.
+            imgproxy is also indispensable when handling lots of image resizing, especially when images come from a remote source.
+
+            imgproxy does one thing — resizing remote images — and does it well.
+            It works great when you need to resize multiple images on the fly to make them match your application design without preparing a ton of cached resized images or re-doing it every time the design changes.
+
+        # Displayed after deployment
+        end: |-
+            🎉🎉🎉 Successfully deployed!  
+            Check it out at: http://$$cap_appname.$$cap_root_domain
+
+            > *NOTE*: There's a lot of environment variables you can set.
+            > Click [here](https://docs.imgproxy.net/configuration) for a complete list.
+
+    # Documentation Link
+    documentation: https://docs.imgproxy.net/
+
+    # Whether this one-click-app uses the official image or a trusted source
+    isOfficial: true
+
+    # Define variables
+    variables:
+
+        # Variable for version
+        -   id: $$cap_appversion
+            label: App Version
+            description: |-
+                Specify the version tag to install.  
+                Click [here](https://hub.docker.com/r/darthsim/imgproxy/tags) for a list of available tags.
+            defaultValue: v2.17.0
+            validRegex: /^v\d+(?:\.\d+(?:\.\d+)?)?(?:\.beta\d+|\.rc\d+)?$/
+
+
+# Define services
+services:
+
+    # imgproxy service
+    $$cap_appname:
+
+        # Use official image
+        image: darthsim/imgproxy:$$cap_appversion
+
+        # Set hostname (f.e. imgproxy.demo.caprover.com)
+        hostname: $$cap_appname.$$cap_root_domain
+
+        # Define environment variables
+        environment:
+
+            # Address and Port, we set port to 80, so we don't have to specify containerHttpPort
+            IMGPROXY_BIND: 0.0.0.0:80

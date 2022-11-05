@@ -1,0 +1,116 @@
+# Use schema version 4
+captainVersion: 4
+
+
+# One-click-app options
+caproverOneClickApp:
+
+    # App name
+    displayName: Prowlarr (Skayo)
+
+    # Description displayed on the app list
+    description: |-
+        An indexer manager/proxy built on the popular *arr base stack that integrates seamlessly with Radarr, Sonarr and similar
+
+    # Define instructions
+    instructions:
+
+        # Displayed one the app config page, where you enter all variable values
+        start: |-
+            ![Prowlarr Logo](https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/prowlarr-banner.png)
+
+            📖 [Documentation](https://wiki.servarr.com/prowlarr)
+            📁 [GitHub](https://github.com/Prowlarr/Prowlarr)
+            🐳 [DockerHub](https://hub.docker.com/r/linuxserver/prowlarr)
+            👛 [Donate](https://github.com/sponsors/Prowlarr)
+
+            Prowlarr is an indexer manager/proxy built on the popular *arr base stack (.NET/React.js) to integrate with your various PVR apps.
+            Prowlarr supports management of both Torrent trackers and Usenet indexers.
+            It integrates seamlessly with Lidarr, Mylar3, Radarr, Readarr, and Sonarr offering complete management of your indexers with no per-app indexer setup required (we do it all).
+
+        # Displayed after deployment
+        end: |-
+            🎉🎉🎉 Successfully deployed!  
+            Check it out at: http://$$cap_appname.$$cap_root_domain
+
+    # Documentation Link
+    documentation: https://wiki.servarr.com/prowlarr
+
+    # Whether this one-click-app uses the official image or a trusted source
+    isOfficial: true
+
+    # Define variables
+    variables:
+
+        # Variable for version
+        -   id: $$cap_appversion
+            label: App Version
+            description: |-
+                Specify the version tag to install.  
+                Click [here](https://hub.docker.com/r/linuxserver/prowlarr/tags) for a list of available tags.
+            defaultValue: 1.4.1120
+            validRegex: /^(?:(?:arm|amd)(?:64|32)(?:v\d+)?-)?(?:develop-?|nightly-?)?(?:version-)?\d+\.\d+\.\d+(?:\.\d+)?(?:-ls\d+)?$/
+
+        # Variable for time zone
+        -   id: $$cap_tz
+            label: Time Zone
+            description: |-
+                Specify your system's time zone.  
+                Click [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for a list of available time zones.
+            defaultValue: Europe/Vienna
+            validRegex: /^\w+\/\w+$/
+
+        # Variable for Process User ID
+        -   id: $$cap_puid
+            label: User ID
+            description: |-
+                Specify the User ID that the process should use.  
+                Run `id <username>` on the host system to see your UID.
+            defaultValue: 1000
+            validRegex: /^-?\d+$/
+
+        # Variable for Process Group ID
+        -   id: $$cap_pgid
+            label: Group ID
+            description: |-
+                Specify the Group ID that the process should use.  
+                Run `id <username>` on the host system to see your GID.
+            defaultValue: 1000
+            validRegex: /^-?\d+$/
+
+
+# Define services
+services:
+
+    # Prowlarr service
+    $$cap_appname:
+
+        # Use image by linuxserver.io
+        image: lscr.io/linuxserver/prowlarr:$$cap_appversion
+
+        # Set hostname (f.e. prowlarr.demo.caprover.com)
+        hostname: $$cap_appname.$$cap_root_domain
+
+        # Define environment variables
+        environment:
+
+            # Process User ID
+            PUID: $$cap_puid
+
+            # Process Group ID
+            PGID: $$cap_pgid
+
+            # Timezone
+            TZ: $$cap_tz
+
+        # Define volumes
+        volumes:
+
+            # Volume containing database data and config
+            - $$cap_appname-config:/config
+
+        # CapRover's special options
+        caproverExtra:
+
+            # Prowlarr uses port 9696
+            containerHttpPort: 9696

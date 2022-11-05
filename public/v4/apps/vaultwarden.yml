@@ -1,0 +1,117 @@
+# Use schema version 4
+captainVersion: 4
+
+
+# One-click-app options
+caproverOneClickApp:
+
+    # App name
+    displayName: vaultwarden (Skayo)
+
+    # Description displayed on the app list
+    description: |-
+        Unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs
+
+    # Define instructions
+    instructions:
+
+        # Displayed one the app config page, where you enter all variable values
+        start: |-
+            ![Vaultwarden Logo](https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-logo.svg)
+
+            📖 [Documentation](https://github.com/dani-garcia/vaultwarden/wiki)
+            📁 [GitHub](https://github.com/dani-garcia/vaultwarden)
+            🐳 [DockerHub](https://hub.docker.com/r/vaultwarden/server)
+            👛 [Donate](https://github.com/sponsors/dani-garcia)
+
+            Alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients*, perfect for self-hosted deployment where running the official resource-heavy service might not be ideal.
+
+            > *NOTE*: This project was known as Bitwarden_RS and has been renamed to separate itself from the official Bitwarden server in the hopes of avoiding confusion and trademark/branding issues.
+
+        # Displayed after deployment
+        end: |-
+            🎉🎉🎉 Successfully deployed!  
+            Check it out at: http://$$cap_appname.$$cap_root_domain
+
+            > *NOTE*: Enable WebSocket Support in the app's HTTP settings.
+            > Also make sure to allow port `3012` through your firewall.
+            > Also enable HTTPS.
+
+            > *NOTE*: There's a lot of environment variables you can set.
+            > Click [here](https://github.com/dani-garcia/vaultwarden/blob/main/.env.template) for a complete list.
+
+    # Documentation Link
+    documentation: https://github.com/dani-garcia/vaultwarden/wiki
+
+    # Whether this one-click-app uses the official image or a trusted source
+    isOfficial: true
+
+    # Define variables
+    variables:
+
+        # Variable for version
+        -   id: $$cap_appversion
+            label: App Version
+            description: |-
+                Specify the version tag to install.  
+                Click [here](https://hub.docker.com/r/vaultwarden/server/tags) for a list of available tags.
+            defaultValue: 1.23.0-alpine
+            validRegex: /^(?:\d+\.\d+\.\d+(?:\.\d+)?)(?:-alpine)?(?:-(?:arm|amd)(?:64|32)(?:v\d+)?)?$/
+
+        # Variable for time zone
+        -   id: $$cap_tz
+            label: Time Zone
+            description: |-
+                Specify your system's time zone.  
+                Click [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for a list of available time zones.
+            defaultValue: Europe/Vienna
+            validRegex: /^\w+\/\w+$/
+
+        # Variable for user signups enabled/disabled
+        -   id: $$cap_user_signups
+            label: Enable User Sign-Ups?
+            description: |-
+                Controls if new users can register.
+                > *NOTE*: You should probably disable this after you sign-up.
+            defaultValue: "true"
+            validRegex: /^(true|false)$/
+
+
+# Define services
+services:
+
+    # Bitwarden service
+    $$cap_appname:
+
+        # Use official image
+        image: vaultwarden/server:$$cap_appversion
+
+        # Set hostname (f.e. vaultwarden.demo.caprover.com)
+        hostname: $$cap_appname.$$cap_root_domain
+
+        # Define environment variables
+        environment:
+
+            # The domain which vaultwarden runs on, I use https because I doubt anyone will run vaultwarden on non-https 
+            DOMAIN: https://$$cap_appname.$$cap_root_domain
+
+            # Timezone
+            TZ: $$cap_tz
+
+            # Enable websocket notifications
+            WEBSOCKET_ENABLED: true
+
+            # Disable user sign-ups
+            SIGNUPS_ALLOWED: $$cap_user_signups
+
+        # Define ports
+        ports:
+
+            # WebSocket port
+            - 3012:3012
+
+        # Define volumes
+        volumes:
+
+            # Volume containing database data and config
+            - $$cap_appname-data:/data

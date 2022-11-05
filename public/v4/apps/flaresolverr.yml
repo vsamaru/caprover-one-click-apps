@@ -1,0 +1,83 @@
+# Use schema version 4
+captainVersion: 4
+
+
+# One-click-app options
+caproverOneClickApp:
+
+    # App name
+    displayName: FlareSolverr (Skayo)
+
+    # Description displayed on the app list
+    description: |-
+        FlareSolverr is a proxy server to bypass Cloudflare protection
+
+    # Define instructions
+    instructions:
+
+        # Displayed one the app config page, where you enter all variable values
+        start: |-
+            📁 [GitHub](https://github.com/FlareSolverr/FlareSolverr)
+            🐳 [DockerHub](https://hub.docker.com/r/flaresolverr/flaresolverr)
+            👛 [Donate](https://www.buymeacoffee.com/ngosang)
+
+            FlareSolverr starts a proxy server and it waits for user requests in an idle state using few resources.
+            When some request arrives, it uses puppeteer with the stealth plugin to create a headless browser (Firefox).
+            It opens the URL with user parameters and waits until the Cloudflare challenge is solved (or timeout).
+            The HTML code and the cookies are sent back to the user, and those cookies can be used to bypass Cloudflare using other HTTP clients.
+
+            Very useful for [Jackett](https://github.com/Jackett/Jackett) or [Prowlarr](https://prowlarr.com/).
+
+        # Displayed after deployment
+        end: |-
+            🎉🎉🎉 Successfully deployed!  
+            Check it out at: http://$$cap_appname.$$cap_root_domain
+
+    # Documentation Link
+    documentation: https://github.com/FlareSolverr/FlareSolverr
+
+    # Whether this one-click-app uses the official image or a trusted source
+    isOfficial: true
+
+    # Define variables
+    variables:
+
+        # Variable for version
+        -   id: $$cap_appversion
+            label: App Version
+            description: |-
+                Specify the version tag to install.  
+                Click [here](https://hub.docker.com/r/flaresolverr/flaresolverr/tags) for a list of available tags.
+            defaultValue: v2.0.2
+            validRegex: /^v\d+\.\d+\.\d+$/
+
+        # Variable for time zone
+        -   id: $$cap_tz
+            label: Time Zone
+            description: |-
+                Specify your system's time zone.  
+                Click [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for a list of available time zones.
+            defaultValue: Europe/Vienna
+            validRegex: /^\w+\/\w+$/
+
+
+# Define services
+services:
+
+    # FlareSolverr service
+    $$cap_appname:
+
+        # Use official image
+        image: ghcr.io/flaresolverr/flaresolverr:$$cap_appversion
+
+        # Set hostname (f.e. flaresolverr.demo.caprover.com)
+        hostname: $$cap_appname.$$cap_root_domain
+
+        # Define environment variables
+        environment:
+
+            # Timezone
+            TZ: $$cap_tz
+
+            # Port, we set it to 80, so we don't have to specify containerHttpPort
+            PORT: 80
